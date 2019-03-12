@@ -56,4 +56,29 @@ public class MotionTest {
         }
         Assert.assertFalse(motion.checkIfVoteCount101());
     }
+
+    //This is to test current motion status - Open.
+    @Test
+    public void test_current_motion_status_Open() {
+        Motion motion = new Motion(true,"Motion1", LocalTime.now());
+        Random random = new Random();
+        int maxVote = 10;
+        for(int i = 0 ; i < maxVote; i++) {
+            motion.addVote(VoteEnum.NO, new Senator(random.nextInt()));
+        }
+        Assert.assertEquals(motion.currentMotionStatus(motion), MotionStatusEnum.OPEN.toString());
+    }
+
+    //This is to test current motion status - Closed.
+    @Test
+    public void test_current_motion_status_Closed() {
+        Motion motion = new Motion(true,"Motion1", LocalTime.now());
+        Random random = new Random();
+        int maxVote = 102;
+        for(int i = 0 ; i < maxVote; i++) {
+            motion.addVote(VoteEnum.NO, new Senator(random.nextInt()));
+        }
+        Assert.assertEquals(motion.currentMotionStatus(motion), MotionStatusEnum.CLOSED.toString());
+    }
+
 }
