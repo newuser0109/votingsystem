@@ -3,6 +3,8 @@
  *
  */
 
-public class Senator extends Candidate{
-
+public class Senator extends VoterType{
+    public Senator(int voterId) {
+        super(voterId);
+    }
 }

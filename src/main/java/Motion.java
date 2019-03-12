@@ -1,4 +1,6 @@
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a motion class, which is what senators will vote for. Motion has a constructor which will open the motion, motion name
@@ -9,19 +11,25 @@ import java.util.Date;
 public class Motion {
 
     private boolean motionOpen;
-    private boolean motionClosed;
     private String motionName;
     private Date motionStartTime;
     private Date motionEndTime;
     private MotionResult motionResult;
+    private final int voteCount = 3;
+    private Map<Integer,String> voteMap = new HashMap<>();
+    private String currentMotionStatus;
+
+    public Motion() {
+    }
 
     public Motion(boolean motionOpen, String motionName, Date motionStartTime) {
         this.motionOpen = motionOpen;
         this.motionName = motionName;
         this.motionStartTime = motionStartTime;
+        this.currentMotionStatus = MotionStatusEnum.OPEN.toString();
     }
 
-    //Motion needs to take in Votes with Senator Id.
+    //Motion needs to take in Votes with VoterType.
 
     //Motion needs method to check if voting is allowed.
     //Motion needs method that returns if motion passed.
@@ -43,13 +51,6 @@ public class Motion {
         this.motionOpen = motionOpen;
     }
 
-    public boolean isMotionClosed() {
-        return motionClosed;
-    }
-
-    public void setMotionClosed(boolean motionClosed) {
-        this.motionClosed = motionClosed;
-    }
 
     public String getMotionName() {
         return motionName;
@@ -75,5 +76,40 @@ public class Motion {
         this.motionEndTime = motionEndTime;
     }
 
+    public Map<Integer, String> getVoteMap() {
+        return voteMap;
+    }
+
+    public boolean startVote(VoteEnum voteEnum, VoterType voterType){
+        if(this.isMotionOpen()){
+            addVote(voteEnum,voterType);
+        }
+        return this.isMotionOpen();
+    }
+
+    public void addVote(VoteEnum voteEnum, VoterType voterType){
+        // check if motion open
+        if(this.isMotionOpen()) {
+            //check if voted  && 101 count
+            if (!this.voteMap.containsKey(voterType.getVoterId()) && this.voteMap.size() < this.voteCount) {
+                //Vote vote = new Vote(voteEnum.toString(),voterType.getVoterId());
+                this.voteMap.put(voterType.getVoterId(), voteEnum.toString());
+                this.currentMotionStatus = MotionStatusEnum.OPEN.toString();
+
+            } else {
+                System.out.println("Voter already voted");
+                this.currentMotionStatus = MotionStatusEnum.CLOSED.toString();
+                this.setMotionEndTime(new Date());
+                this.setMotionOpen(false);
+            }
+        }
+        else{
+            System.out.println("Motion not open");
+        }
+    }
+
+    public String currentMotionStatus(Motion motion){
+        return motion.currentMotionStatus;
+    }
 
 }
