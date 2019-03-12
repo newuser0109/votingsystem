@@ -9,19 +9,19 @@ public class MainMotionStartProgramm {
 
     public static void main(String[] args) throws InterruptedException {
 
-
+        MotionVoting motionVoting = new MotionVoting();
         Motion motion = new Motion(true,"Motion1", LocalTime.now());
         System.out.println("motion name: " + motion.getMotionName()
                 + " and startTime: " + motion.getMotionStartTime()
                 + " and IsMotionOpen: " + motion.isMotionOpen());
 
-        motion.addVote(VoteEnum.NO, new Senator(123));
+        motionVoting.addVote(VoteEnum.NO, new Senator(123), motion);
         System.out.println(motion.currentMotionStatus(motion));
-        motion.addVote(VoteEnum.NO, new Senator(456));
+        motionVoting.addVote(VoteEnum.NO, new Senator(456), motion);
         System.out.println(motion.currentMotionStatus(motion));
-        motion.addVote(VoteEnum.YES, new Senator(111));
+        motionVoting.addVote(VoteEnum.YES, new Senator(111), motion);
         System.out.println(motion.currentMotionStatus(motion));
-        motion.addVote(VoteEnum.YES, new Senator(4564));
+        motionVoting.addVote(VoteEnum.YES, new Senator(4564), motion);
         System.out.println(motion.currentMotionStatus(motion));
 
 
