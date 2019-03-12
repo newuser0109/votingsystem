@@ -1,5 +1,4 @@
-import java.util.Date;
-import java.util.List;
+import java.time.LocalTime;
 
 /**
  * This is a Motion Results class.
@@ -7,49 +6,51 @@ import java.util.List;
  */
 
 public class MotionResult {
-    private boolean motionStatus;
-    private List<Integer> yesVotes;
-    private List<Integer> noVotes;
-    private Date motionVotingOpen;
-    private Date motionVotingClosed;
 
-    public boolean isMotionStatus() {
+    private String motionStatus;
+    private int yesVotes;
+    private int noVotes;
+    private LocalTime motionVotingOpen;
+    private LocalTime motionVotingClosed;
+
+
+    public String getMotionStatus() {
         return motionStatus;
     }
 
-    public void setMotionStatus(boolean motionStatus) {
+    public void setMotionStatus(String motionStatus) {
         this.motionStatus = motionStatus;
     }
 
-    public List<Integer> getYesVotes() {
+    public int getYesVotes() {
         return yesVotes;
     }
 
-    public void setYesVotes(List<Integer> yesVotes) {
+    public void setYesVotes(int yesVotes) {
         this.yesVotes = yesVotes;
     }
 
-    public List<Integer> getNoVotes() {
+    public int getNoVotes() {
         return noVotes;
     }
 
-    public void setNoVotes(List<Integer> noVotes) {
+    public void setNoVotes(int noVotes) {
         this.noVotes = noVotes;
     }
 
-    public Date getMotionVotingOpen() {
+    public LocalTime getMotionVotingOpen() {
         return motionVotingOpen;
     }
 
-    public void setMotionVotingOpen(Date motionVotingOpen) {
+    public void setMotionVotingOpen(LocalTime motionVotingOpen) {
         this.motionVotingOpen = motionVotingOpen;
     }
 
-    public Date getMotionVotingClosed() {
+    public LocalTime getMotionVotingClosed() {
         return motionVotingClosed;
     }
 
-    public void setMotionVotingClosed(Date motionVotingClosed) {
+    public void setMotionVotingClosed(LocalTime motionVotingClosed) {
         this.motionVotingClosed = motionVotingClosed;
     }
 }

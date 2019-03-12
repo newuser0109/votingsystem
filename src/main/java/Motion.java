@@ -1,4 +1,3 @@
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,6 @@ public class Motion {
     private Map<Integer,String> voteMap = new HashMap<>();
     private String currentMotionStatus;
 
-    private static final int FIFTEEN_MINUTES = 15 * 60;
     private MotionVoting motionVoting;
 
 
@@ -35,19 +33,13 @@ public class Motion {
         this.motionVoting = new MotionVoting();
     }
 
-    //Motion needs to take in Votes with VoterType.
+    public MotionVoting getMotionVoting() {
+        return motionVoting;
+    }
 
-    //Motion needs method to check if voting is allowed.
-    //Motion needs method that returns if motion passed.
-    //Motion needs method that returns if motion failed.
-    //motion needs method to close motion voting.
-            //  check if tie, if tie only VP can vote, once VP votes motion can close.
-            // VP can only vote on tied state.
-            // IF VP not available motion can be forced to closed state which will fail the motion.
-    //motion needs method to check if Voter has already voted.
-    //motion needs method to allow only 101 votes.
-    //motion needs query to determine current state of vote.
-
+    public void setMotionVoting(MotionVoting motionVoting) {
+        this.motionVoting = motionVoting;
+    }
 
     public String getCurrentMotionStatus() {
         return currentMotionStatus;
@@ -94,19 +86,34 @@ public class Motion {
         return voteMap;
     }
 
-    public boolean closeMotionVote(Motion motion){
-        LocalTime finalTime = LocalTime.now();
-        long fifteen_minutes = Duration.between(finalTime, motion.getMotionStartTime()).getSeconds();
-        if(
-                FIFTEEN_MINUTES == fifteen_minutes){
-            motion.setMotionOpen(false);
-        }
-
-        return motion.motionOpen;
-    }
 
     public String currentMotionStatus(Motion motion){
         return motion.currentMotionStatus;
     }
 
+
+    public MotionResult startMotionVote(VoteEnum voteEnum, VoterType voterType, Motion motion) {
+        MotionResult motionResult = new MotionResult();
+        MotionVoting motionVoting = motion.getMotionVoting();
+        if (motion.isMotionOpen()) {
+            if (motionVoting.checkIfVoteCount101()) {
+                System.out.println(
+                    "Motion already reached 101 count, closing the motion. and return results.");
+                motion.setMotionOpen(false);
+                motion.setCurrentMotionStatus(MotionStatusEnum.CLOSED.toString());
+
+                //Return motion result.
+            }
+        } else {
+            System.out.println("You cannot vote, motion is not open.");
+        }
+        return motionResult;
+    }
+
+    public MotionResult createMotionResult(Motion motion) {
+        MotionResult motionResult = new MotionResult();
+        MotionVoting motionVoting = motion.getMotionVoting();
+
+        return motionResult;
+    }
 }

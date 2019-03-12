@@ -9,21 +9,27 @@ public class MainMotionStartProgramm {
 
     public static void main(String[] args) throws InterruptedException {
 
-        MotionVoting motionVoting = new MotionVoting();
-        Motion motion = new Motion(true,"Motion1", LocalTime.now());
+        Motion motion = new Motion(true, "Motion", LocalTime.now());
+
+        motion.getMotionVoting().addVote(VoteEnum.NO, new Senator(123), motion);
+        System.out.println(motion.currentMotionStatus(motion));
+        motion.getMotionVoting().addVote(VoteEnum.NO, new Senator(456), motion);
+        System.out.println(motion.currentMotionStatus(motion));
+        motion.getMotionVoting().addVote(VoteEnum.YES, new Senator(111), motion);
+        System.out.println(motion.currentMotionStatus(motion));
+        motion.getMotionVoting().addVote(VoteEnum.YES, new Senator(4564), motion);
+        System.out.println(motion.currentMotionStatus(motion));
+
+        Motion motion1 = new Motion(true, "Motion1", LocalTime.now());
+
+        motion1.getMotionVoting().addVote(VoteEnum.NO, new Senator(123), motion1);
+        System.out.println(motion1.currentMotionStatus(motion));
+        motion1.getMotionVoting().addVote(VoteEnum.NO, new Senator(456), motion1);
+        System.out.println(motion1.currentMotionStatus(motion));
+
         System.out.println("motion name: " + motion.getMotionName()
                 + " and startTime: " + motion.getMotionStartTime()
                 + " and IsMotionOpen: " + motion.isMotionOpen());
-
-        motionVoting.addVote(VoteEnum.NO, new Senator(123), motion);
-        System.out.println(motion.currentMotionStatus(motion));
-        motionVoting.addVote(VoteEnum.NO, new Senator(456), motion);
-        System.out.println(motion.currentMotionStatus(motion));
-        motionVoting.addVote(VoteEnum.YES, new Senator(111), motion);
-        System.out.println(motion.currentMotionStatus(motion));
-        motionVoting.addVote(VoteEnum.YES, new Senator(4564), motion);
-        System.out.println(motion.currentMotionStatus(motion));
-
 
         motion.getVoteMap().forEach((k,v)->System.out.println("Voter Id:" + k + " Vote: " + v));
 

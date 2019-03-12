@@ -2,6 +2,7 @@
  * Copyright (c) ${date} Travelport. All rights reserved.
  */
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,8 @@ public class MotionVoting {
     private int totalVote = 101;
     private int totalSenateVoteAllowed = 100;
     private int totalVpVoteAllowed = 1;
+    private static final int FIFTEEN_MINUTES = 15 * 60;
+
 
     public Map<Integer, String> getSenateVoteMap() {
         return senateVoteMap;
@@ -89,16 +92,6 @@ public class MotionVoting {
     }
 
 
-
-    public boolean startMotionVote(VoteEnum voteEnum, VoterType voterType, Motion motion){
-        if(motion.isMotionOpen()){
-            if(!checkIfVoterTypeReachedLimit(voterType)) {
-                addVote(voteEnum, voterType, motion);
-            }
-        }
-        return motion.isMotionOpen();
-    }
-
     public boolean checkIfVoterTypeReachedLimit(VoterType voterType){
         boolean voterTypeReachedLimit = false;
         if(voterType instanceof  Senator){
@@ -113,4 +106,16 @@ public class MotionVoting {
         }
         return voterTypeReachedLimit;
     }
+
+
+    public boolean closeMotionVoteBeforeTimeAllowed(Motion motion) {
+        LocalTime finalTime = LocalTime.now();
+        long fifteen_minutes = Duration.between(finalTime, motion.getMotionStartTime())
+            .getSeconds();
+        if (FIFTEEN_MINUTES == fifteen_minutes) {
+            motion.setMotionOpen(false);
+        }
+        return motion.isMotionOpen();
+    }
+
 }

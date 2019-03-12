@@ -11,15 +11,15 @@ public class MotionTest {
     @Test
     public void test_motion_not_allowed_to_vote_if_closed() {
         Motion motion = new Motion();
-        Assert.assertFalse(motionVoting.startMotionVote(VoteEnum.YES, new Senator(123), motion));
+        //  Assert.assertFalse(motionVoting.startMotionVote(VoteEnum.YES, new Senator(123), motion));
     }
 
-    //This is to test if motion can be close before 15 minutes
+    //This is to test if motion cannot be close before 15 minutes
     @Test
-    public void test_if_motion_closed_before_15_min() throws InterruptedException {
+    public void test_if_motion_cannot_closed_before_15_min() throws InterruptedException {
         Motion motion = new Motion(true,"Motion1", LocalTime.now());
         Thread.sleep(2);
-        Assert.assertTrue(motion.closeMotionVote(motion));
+        Assert.assertTrue(motionVoting.closeMotionVoteBeforeTimeAllowed(motion));
     }
 
     //This is to test voter already voted - NO
