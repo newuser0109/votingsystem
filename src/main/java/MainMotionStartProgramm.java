@@ -1,4 +1,4 @@
-import java.util.Date;
+import java.time.LocalTime;
 
 /**
  * This is a main program that will start motion voting.
@@ -7,10 +7,10 @@ import java.util.Date;
 
 public class MainMotionStartProgramm {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
 
-        Motion motion = new Motion(true,"Motion1", new Date());
+        Motion motion = new Motion(true,"Motion1", LocalTime.now());
         System.out.println("motion name: " + motion.getMotionName()
                 + " and startTime: " + motion.getMotionStartTime()
                 + " and IsMotionOpen: " + motion.isMotionOpen());
@@ -26,6 +26,7 @@ public class MainMotionStartProgramm {
 
 
         motion.getVoteMap().forEach((k,v)->System.out.println("Voter Id:" + k + " Vote: " + v));
+
 
     }
 

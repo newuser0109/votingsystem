@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,17 +14,20 @@ public class Motion {
 
     private boolean motionOpen;
     private String motionName;
-    private Date motionStartTime;
-    private Date motionEndTime;
+    private LocalTime motionStartTime;
+    private LocalTime motionEndTime;
     private MotionResult motionResult;
-    private final int voteCount = 3;
+    private final int voteCount = 101;
     private Map<Integer,String> voteMap = new HashMap<>();
     private String currentMotionStatus;
+
+    private static final int FIFTEEN_MINUTES = 15 * 60;
+
 
     public Motion() {
     }
 
-    public Motion(boolean motionOpen, String motionName, Date motionStartTime) {
+    public Motion(boolean motionOpen, String motionName, LocalTime motionStartTime) {
         this.motionOpen = motionOpen;
         this.motionName = motionName;
         this.motionStartTime = motionStartTime;
@@ -60,19 +65,19 @@ public class Motion {
         this.motionName = motionName;
     }
 
-    public Date getMotionStartTime() {
+    public LocalTime getMotionStartTime() {
         return motionStartTime;
     }
 
-    public void setMotionStartTime(Date motionStartTime) {
+    public void setMotionStartTime(LocalTime motionStartTime) {
         this.motionStartTime = motionStartTime;
     }
 
-    public Date getMotionEndTime() {
+    public LocalTime getMotionEndTime() {
         return motionEndTime;
     }
 
-    public void setMotionEndTime(Date motionEndTime) {
+    public void setMotionEndTime(LocalTime motionEndTime) {
         this.motionEndTime = motionEndTime;
     }
 
@@ -80,18 +85,37 @@ public class Motion {
         return voteMap;
     }
 
-    public boolean startVote(VoteEnum voteEnum, VoterType voterType){
+    public boolean startMotionVote(VoteEnum voteEnum, VoterType voterType){
         if(this.isMotionOpen()){
             addVote(voteEnum,voterType);
         }
         return this.isMotionOpen();
     }
 
+    public boolean closeMotionVote(Motion motion){
+        LocalTime finalTime = LocalTime.now();
+        long fifteen_minutes = Duration.between(finalTime, motion.getMotionStartTime()).getSeconds();
+        if(
+                FIFTEEN_MINUTES == fifteen_minutes){
+            motion.setMotionOpen(false);
+        }
+
+        return motion.motionOpen;
+    }
+
+    public boolean checkIfAlreadyVoted(int voterId){
+        return this.voteMap.containsKey(voterId);
+    }
+
+    public boolean checkIfVoteCount101(){
+        return this.voteMap.size() < this.voteCount;
+    }
+
     public void addVote(VoteEnum voteEnum, VoterType voterType){
         // check if motion open
         if(this.isMotionOpen()) {
             //check if voted  && 101 count
-            if (!this.voteMap.containsKey(voterType.getVoterId()) && this.voteMap.size() < this.voteCount) {
+            if (!checkIfAlreadyVoted(voterType.getVoterId()) && checkIfVoteCount101()) {
                 //Vote vote = new Vote(voteEnum.toString(),voterType.getVoterId());
                 this.voteMap.put(voterType.getVoterId(), voteEnum.toString());
                 this.currentMotionStatus = MotionStatusEnum.OPEN.toString();
@@ -99,7 +123,7 @@ public class Motion {
             } else {
                 System.out.println("Voter already voted");
                 this.currentMotionStatus = MotionStatusEnum.CLOSED.toString();
-                this.setMotionEndTime(new Date());
+                this.setMotionEndTime(LocalTime.now());
                 this.setMotionOpen(false);
             }
         }
