@@ -1,6 +1,4 @@
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This is a motion class, which is what senators will vote for. Motion has a constructor which will open the motion, motion name
@@ -14,9 +12,8 @@ public class Motion {
     private String motionName;
     private LocalTime motionStartTime;
     private LocalTime motionEndTime;
-    private MotionResult motionResult;
-    private final int voteCount = 101;
-    private Map<Integer,String> voteMap = new HashMap<>();
+    private int yesVotes;
+    private int noVotes;
     private String currentMotionStatus;
 
     private MotionVoting motionVoting;
@@ -31,6 +28,22 @@ public class Motion {
         this.motionStartTime = motionStartTime;
         this.currentMotionStatus = MotionStatusEnum.OPEN.toString();
         this.motionVoting = new MotionVoting();
+    }
+
+    public int getYesVotes() {
+        return yesVotes;
+    }
+
+    public void setYesVotes(int yesVotes) {
+        this.yesVotes = yesVotes;
+    }
+
+    public int getNoVotes() {
+        return noVotes;
+    }
+
+    public void setNoVotes(int noVotes) {
+        this.noVotes = noVotes;
     }
 
     public MotionVoting getMotionVoting() {
@@ -82,38 +95,21 @@ public class Motion {
         this.motionEndTime = motionEndTime;
     }
 
-    public Map<Integer, String> getVoteMap() {
-        return voteMap;
-    }
-
 
     public String currentMotionStatus(Motion motion){
         return motion.currentMotionStatus;
     }
 
-
-    public MotionResult startMotionVote(VoteEnum voteEnum, VoterType voterType, Motion motion) {
-        MotionResult motionResult = new MotionResult();
-        MotionVoting motionVoting = motion.getMotionVoting();
-        if (motion.isMotionOpen()) {
-            if (motionVoting.checkIfVoteCount101()) {
-                System.out.println(
-                    "Motion already reached 101 count, closing the motion. and return results.");
-                motion.setMotionOpen(false);
-                motion.setCurrentMotionStatus(MotionStatusEnum.CLOSED.toString());
-
-                //Return motion result.
-            }
-        } else {
-            System.out.println("You cannot vote, motion is not open.");
-        }
-        return motionResult;
-    }
-
-    public MotionResult createMotionResult(Motion motion) {
-        MotionResult motionResult = new MotionResult();
-        MotionVoting motionVoting = motion.getMotionVoting();
-
-        return motionResult;
+    @Override
+    public String toString() {
+        return "Motion{" +
+            "motionOpen=" + motionOpen +
+            ", motionName='" + motionName + '\'' +
+            ", motionStartTime=" + motionStartTime +
+            ", motionEndTime=" + motionEndTime +
+            ", yesVotes=" + yesVotes +
+            ", noVotes=" + noVotes +
+            ", currentMotionStatus='" + currentMotionStatus + '\'' +
+            '}';
     }
 }

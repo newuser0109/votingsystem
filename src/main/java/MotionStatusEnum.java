@@ -7,5 +7,7 @@
 public enum MotionStatusEnum {
     OPEN,
     CLOSED,
-    TIED
+    TIED,
+    PASSED,
+    FAILED
 }
