@@ -6,7 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="senatemotionvoting" />
+        <module name="senate.motion.voting" />
       </profile>
     </annotationProcessing>
   </component>

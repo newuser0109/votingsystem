@@ -1,5 +1,5 @@
 /**
- * This is an abstract candidate class with vote method.
+ * This is an abstract VoterType class which contains basic VoterId method.
  *
  */
 

@@ -5,16 +5,10 @@ import org.junit.Test;
 
 public class MotionTest {
 
-    MotionVoting motionVoting = new MotionVoting();
-    Random random = new Random();
+    private MotionVoting motionVoting = new MotionVoting();
+    private Random random = new Random();
 
 
-    //This is to test that Voting is not allowed if Motion is not open.
-    @Test
-    public void test_motion_not_allowed_to_vote_if_closed() {
-        Motion motion = new Motion();
-        //  Assert.assertFalse(motionVoting.startMotionVote(VoteEnum.YES, new Senator(123), motion));
-    }
 
     //This is to test if motion cannot be close before 15 minutes
     @Test
@@ -27,7 +21,6 @@ public class MotionTest {
     //This is to test voter already voted - NO
     @Test
     public void test_if_voter_voted_in_motion_NO() {
-        Motion motion = new Motion(true,"Motion1", LocalTime.now());
         VoterType vote = new Senator(23);
         Assert.assertFalse(motionVoting.checkIfAlreadyVoted(vote));
 
