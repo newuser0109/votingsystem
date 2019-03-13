@@ -42,15 +42,24 @@ public class MotionVoting {
         this.vpVoteMap = vpVoteMap;
     }
 
+    /**
+     * This method keeps the vote tally.
+     */
     public  void  voteTally(VoterType voterType, VoteEnum voteEnum){
-        if(voterType instanceof  Senator){
-            senateVoteMap.put(voterType.getVoterId(), voteEnum.toString());
-        }
-        if(voterType  instanceof  VP){
-            vpVoteMap.put(voterType.getVoterId(), voteEnum.toString());
+        if (!checkIfVoteCount101() && !checkIfAlreadyVoted(voterType)
+            && !checkIfVoterTypeReachedLimit(voterType)) {
+            if (voterType instanceof Senator) {
+                senateVoteMap.put(voterType.getVoterId(), voteEnum.toString());
+            }
+            if (voterType instanceof VP) {
+                vpVoteMap.put(voterType.getVoterId(), voteEnum.toString());
+            }
         }
     }
 
+    /**
+     * This method checks if voter already voted.
+     */
     public boolean checkIfAlreadyVoted(VoterType voterType){
         boolean alreadyVoted = false;
         if(voterType instanceof  Senator){
@@ -66,6 +75,10 @@ public class MotionVoting {
         return alreadyVoted;
     }
 
+    /**
+     * This method check if vote count is 101 or not.
+     *
+     */
     public boolean checkIfVoteCount101(){
         int totalVoted = this.senateVoteMap.size();
         totalVoted += this.vpVoteMap.size();
@@ -77,11 +90,19 @@ public class MotionVoting {
     }
 
 
+    /**
+     * This method adds all senator votes.
+     *
+     */
     public void addSenatorVote(VoteEnum voteEnum, Senator senator, Motion motion) {
         voteTally(senator, voteEnum);
-                motion.setCurrentMotionStatus(MotionStatusEnum.OPEN.toString());
+        motion.setCurrentMotionStatus(MotionStatusEnum.OPEN.toString());
     }
 
+    /**
+     * This method adds VP Vote.
+     *
+     */
     public void addVpVote(VoteEnum voteEnum, VP vp, Motion motion) {
         if (motion.getCurrentMotionStatus()
             .equals(MotionStatusEnum.TIED.toString())
@@ -91,6 +112,10 @@ public class MotionVoting {
         }
     }
 
+    /**
+     * This method checks if voter type such as senator or VP has reached there voting limit.
+     *
+     */
     public boolean checkIfVoterTypeReachedLimit(VoterType voterType){
         boolean voterTypeReachedLimit = false;
         if(voterType instanceof  Senator){
@@ -107,21 +132,37 @@ public class MotionVoting {
     }
 
 
+    /**
+     * This method checks if motion can be closed before allowed time, if time is up calculate the results.
+     *
+     */
     public boolean closeMotionVoteBeforeTimeAllowed(Motion motion) {
         LocalTime finalTime = LocalTime.now();
         long fifteen_minutes = Duration.between(finalTime, motion.getMotionStartTime())
             .getSeconds();
         if (FIFTEEN_MINUTES == fifteen_minutes) {
-            motion.setMotionOpen(false);
+            calculateResultAndClose(motion);
+
+            System.out.println("Motion closed since 15 min is up");
         }
+        System.out.println("Motion open since its not 15 min yet");
+
         return motion.isMotionOpen();
     }
 
 
+    /**
+     * This method calculates final result.
+     *
+     */
     public void createMotionResult(Motion motion) {
         setMotionResultVotesAndStatus(motion);
     }
 
+    /**
+     * This method closes the motion.
+     *
+     */
     public void closeMotion(Motion motion) {
         if (motion != null) {
             if (motion.getCurrentMotionStatus().equals(MotionStatusEnum.PASSED.toString()) || motion
@@ -132,7 +173,10 @@ public class MotionVoting {
         }
     }
 
-
+    /**
+     * This method checks If VP can vote, based on Motion Ties. And sets appropriate status.
+     *
+     */
     public void vpVoteIfTied(Motion motion, VoteEnum voteEnum,
         VP vp, boolean isVpAvailable) {
         //If Motion status is TIED VP Votes
@@ -146,6 +190,7 @@ public class MotionVoting {
                 motion.setYesVotes(motion.getYesVotes() + 1);
             } else {
                 motion.setNoVotes(motion.getNoVotes() + 1);
+                motion.setCurrentMotionStatus(MotionStatusEnum.FAILED.toString());
             }
         } else if (motion.getCurrentMotionStatus().equals(MotionStatusEnum.TIED.toString())
             && !isVpAvailable) {
@@ -155,17 +200,29 @@ public class MotionVoting {
         }
     }
 
+    /**
+     * This method calculates Results and close the motion.
+     *
+     */
     public void calculateResultAndClose(Motion motion) {
         createMotionResult(motion);
         closeMotion(motion); // Close the motion if passed or failed.
     }
 
+    /**
+     * This method prints the motion result.
+     *
+     */
     public void printResultIfClosed(Motion motion) {
         if (!motion.isMotionOpen()) {
             System.out.println(motion);
         }
     }
 
+    /**
+     * This private method calculates motion results, votes and sets the status, vote counts.
+     *
+     */
     private void setMotionResultVotesAndStatus(Motion motion) {
         MotionVoting motionVoting = motion.getMotionVoting();
         //number of yes or no votes for senate:
@@ -182,10 +239,18 @@ public class MotionVoting {
         setMotionStatus(motion, totalYesCount, totalNoCount);
     }
 
+    /**
+     * This method  sets motion to tied status.
+     *
+     */
     private void setMotionStatusToTied(Motion motion) {
         motion.setCurrentMotionStatus(MotionStatusEnum.TIED.toString());
     }
 
+    /**
+     * This method sets the motions status based on yes , no or tied count.
+     *
+     */
     private void setMotionStatus(Motion motion, int totalYesCount, int totalNoCount) {
         //check if motion passed or failed. //Motion passes only if votes are more than 50% - 51 votes.
         if (totalYesCount >= totalVoteNeededToPass) {
@@ -197,6 +262,10 @@ public class MotionVoting {
         }
     }
 
+    /**
+     * This method gets total  number of No counts.
+     *
+     */
     private int getTotalNoCount(Map<String, Long> senateCount, Map<String, Long> vpCount,
         VoteEnum no) {
         int totalNoCount = 0;
@@ -209,6 +278,10 @@ public class MotionVoting {
         return totalNoCount;
     }
 
+    /**
+     * This method gets total  number of YES counts.
+     *
+     */
     private int getTotalYesCount(Map<String, Long> senateCount, Map<String, Long> vpCount,
         VoteEnum yes) {
         int totalYesCount = 0;
@@ -221,6 +294,10 @@ public class MotionVoting {
         return totalYesCount;
     }
 
+    /**
+     * This method gets the Map count of Yes or No.
+     *
+     */
     private Map yesNoMapCount(Map<Integer, String> map) {
         Map<String, Long> yesNoMapCount = map
             .values()

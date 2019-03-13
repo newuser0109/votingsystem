@@ -6,6 +6,8 @@ import org.junit.Test;
 public class MotionTest {
 
     MotionVoting motionVoting = new MotionVoting();
+    Random random = new Random();
+
 
     //This is to test that Voting is not allowed if Motion is not open.
     @Test
@@ -66,7 +68,7 @@ public class MotionTest {
         for(int i = 0 ; i < maxVote; i++) {
             motionVoting.addSenatorVote(VoteEnum.NO, new Senator(random.nextInt()), motion);
         }
-        Assert.assertTrue(motionVoting.checkIfVoteCount101());
+        Assert.assertFalse(motionVoting.checkIfVoteCount101());
     }
 
     //This is to test current motion status - Open.
@@ -204,37 +206,80 @@ public class MotionTest {
 
     }
 
-    @Test
-    public void test_IF_TIED_VP_CAN_VOTE_And_Check_Current_Status() {
-        Motion motion = new Motion(true, "MotionTIEDVPVote", LocalTime.now());
-        Random random = new Random();
-        int maxYesVote = 50;
-        int maxNoVote = 50;
 
+    // Test if Motion Passes after VP Votes Yes
+    @Test
+    public void test_tied_Vp_Pass() {
+        Motion motionTied = new Motion(true, "motionTiedPass", LocalTime.now());
+        MotionVoting motionVotingTied = generateRandomVotes(motionTied, random, 50, 50);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Gather Motion Result and Try to close
+        motionVotingTied.calculateResultAndClose(motionTied);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Vp Vote if Tied and is available to vote.
+        motionVotingTied
+            .vpVoteIfTied(motionTied, VoteEnum.YES, new VP(99), true);
+
+        Assert
+            .assertEquals(motionTied.getCurrentMotionStatus(), MotionStatusEnum.PASSED.toString());
+
+    }
+
+    // Test if Motion Fails if VP votes NO
+    @Test
+    public void test_tied_Vp_Fail() {
+        Motion motionTied = new Motion(true, "motionTiedFailedVP", LocalTime.now());
+        MotionVoting motionVotingTied = generateRandomVotes(motionTied, random, 50, 50);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Gather Motion Result and Try to close
+        motionVotingTied.calculateResultAndClose(motionTied);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Vp Vote if Tied and is available to vote.
+        motionVotingTied
+            .vpVoteIfTied(motionTied, VoteEnum.NO, new VP(99), true);
+
+        Assert
+            .assertEquals(motionTied.getCurrentMotionStatus(), MotionStatusEnum.FAILED.toString());
+
+    }
+
+    // Test if Motion Fails if VP is not available.
+    @Test
+    public void test_tied_VP_Not_Avail_Failed() {
+        Motion motionTied = new Motion(true, "motionTiedFailedVPNotAvail", LocalTime.now());
+        MotionVoting motionVotingTied = generateRandomVotes(motionTied, random, 50, 50);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Gather Motion Result and Try to close
+        motionVotingTied.calculateResultAndClose(motionTied);
+        //Take Status
+        System.out.println(motionTied.getCurrentMotionStatus());
+        //Vp Vote if Tied and is available to vote.
+        motionVotingTied
+            .vpVoteIfTied(motionTied, VoteEnum.NO, new VP(99), false);
+
+        Assert
+            .assertEquals(motionTied.getCurrentMotionStatus(), MotionStatusEnum.FAILED.toString());
+
+    }
+
+    public static MotionVoting generateRandomVotes(Motion motion, Random random, int maxYesVote,
+        int maxNoVote) {
         MotionVoting motionVoting = motion.getMotionVoting();
         Senator senator = null;
         for (int i = 0; i < maxYesVote; i++) {
             senator = new Senator(random.nextInt());
             motionVoting.addSenatorVote(VoteEnum.YES, senator, motion);
-            System.out.println(motion.getCurrentMotionStatus());
         }
 
         for (int i = 0; i < maxNoVote; i++) {
             senator = new Senator(random.nextInt());
             motionVoting.addSenatorVote(VoteEnum.NO, senator, motion);
-            System.out.println(motion.getCurrentMotionStatus());
-
         }
-        motionVoting.createMotionResult(motion);
-        motionVoting.closeMotion(motion);
-        Assert.assertEquals(MotionStatusEnum.TIED.toString(), motion.getCurrentMotionStatus());
-
-        Assert.assertTrue(motion.isMotionOpen());
-
-        motionVoting.addVpVote(VoteEnum.YES, new VP(99), motion);
-        Assert.assertEquals(1, motionVoting.getVpVoteMap().size());
-
-
+        return motionVoting;
     }
-
 }

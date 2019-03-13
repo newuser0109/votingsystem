@@ -2,7 +2,7 @@ import java.time.LocalTime;
 import java.util.Random;
 
 /**
- * This is a main program that will start motion voting.
+ * This is a main program that will start some sample motion voting for this coding test.
  *
  */
 
@@ -103,8 +103,13 @@ public class MainMotionStartProgramm {
             50);
         //Take Status
         System.out.println(motionFailedNoVp.getCurrentMotionStatus());
+
+        //Simlate TRY TO CLOSE THE MOTION BEFORE 15 minutes.
+        motionVotingFailledNoVP.closeMotionVoteBeforeTimeAllowed(motion);
+
         //Gather Motion Result and Try to close
         motionVotingFailledNoVP.calculateResultAndClose(motionFailedNoVp);
+
         //Take Status
         System.out.println(motionFailedNoVp.getCurrentMotionStatus());
         //Vp Vote if Tied and is available to vote.

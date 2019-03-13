@@ -1,9 +1,9 @@
 import java.time.LocalTime;
 
 /**
- * This is a motion class, which is what senators will vote for. Motion has a constructor which will open the motion, motion name
+ * This is a motion class, which is what senators/vp will vote for. Motion has a constructor which will open the motion, motion name
  * and start time.
- *
+ * It contains motion status attributes: startTIme, endTime, yesVotes, noVotes, status, open/closed,motionName.
  */
 
 public class Motion {
