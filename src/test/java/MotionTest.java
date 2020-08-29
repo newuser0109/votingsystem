@@ -253,7 +253,7 @@ public class MotionTest {
         System.out.println(motionTied.getCurrentMotionStatus());
         //Vp Vote if Tied and is available to vote.
         motionVotingTied
-            .vpVoteIfTied(motionTied, VoteEnum.NO, new VP(99), false);
+            .vpVoteIfTied(motionTied, VoteEnum.NO, new VP(9911), false);
 
         Assert
             .assertEquals(motionTied.getCurrentMotionStatus(), MotionStatusEnum.FAILED.toString());
