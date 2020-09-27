@@ -15,7 +15,7 @@ public class MotionTest {
     public void test_if_motion_cannot_closed_before_15_min() throws InterruptedException {
         Motion motion = new Motion(true,"Motion1", LocalTime.now());
         Thread.sleep(2);
-        Assert.assertFalse(motionVoting.closeMotionVoteBeforeTimeAllowed(motion));
+        Assert.assertTrue(motionVoting.closeMotionVoteBeforeTimeAllowed(motion));
     }
 
     //This is to test voter already voted - NO
