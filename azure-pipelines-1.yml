@@ -16,7 +16,6 @@ steps:
     organization: 'suketu0109'
     scannerMode: 'Other'
 
-- task: SonarCloudAnalyze@1
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
