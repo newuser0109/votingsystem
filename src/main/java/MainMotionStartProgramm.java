@@ -23,6 +23,7 @@ public class MainMotionStartProgramm {
         MotionVoting motionVoting = generateRandomVotes(motion, random, maxYesVote, maxNoVote);
         //Take Status
         System.out.println(motion.getCurrentMotionStatus());
+        System.out.println(motion.getCurrentMotionStatus());
         //Gather Motion Result and Try to close
         motionVoting.calculateResultAndClose(motion);
         //Take Status
